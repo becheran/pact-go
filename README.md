@@ -156,9 +156,10 @@ func TestUserAPIClient(t *testing.T) {
 		AddInteraction().
 		Given("A user with ID 10 exists").
 		UponReceiving("A request for User 10").
-		WithRequest("GET", S("/user/10")).
-		WillRespondWith(200).
-		WithBodyMatch(&User{})
+		WithRequestPathMatcher("GET", matchers.S("/user/10")).
+		WillRespondWith(200, func(vrb *consumer.V2ResponseBuilder) {
+			vrb.BodyMatch(&User{})
+		})
 
 	// Act: test our API client behaves correctly
 	err = mockProvider.ExecuteTest(func(config MockServerConfig) error {
